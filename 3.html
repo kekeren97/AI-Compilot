@@ -1,0 +1,1022 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>微软 FY26 Q2：AI 带来的收入与成本（手机端信息图）</title>
+
+  <!-- Fonts (optional) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+
+  <!-- ECharts -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+
+  <style>
+    :root{
+      --bg:#f4f4f2;
+      --card:#ffffff;
+      --ink:#1f2328;
+      --muted:#6b7280;
+      --line:#e6e6e3;
+
+      /* low-saturation palette */
+      --deep-blue:#1f5a6a;
+      --deep-green:#4f7f5b;
+      --deep-red:#b15245;
+      --sand:#d5b35f;
+      --stone:#9aa0a6;
+
+      --shadow: 0 10px 30px rgba(0,0,0,.06);
+      --radius: 18px;
+      --max: 980px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--ink);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "PingFang SC","Hiragino Sans GB","Microsoft YaHei", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    a{color:inherit}
+    .wrap{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 18px 14px 60px;
+      padding-bottom: calc(60px + env(safe-area-inset-bottom));
+    }
+
+    /* Header */
+    .hero{ padding: 18px 8px 10px; }
+    .kicker{
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    h1{
+      margin: 10px 0 8px;
+      font-family: "Noto Serif SC", serif;
+      font-size: 30px;
+      line-height: 1.18;
+      letter-spacing: .02em;
+    }
+    .sub{
+      margin:0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    /* Sticky nav (mobile) */
+    .sticky{
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin: 10px 0 12px;
+      padding: 10px 10px;
+      background: rgba(244,244,242,.86);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav{
+      display:flex;
+      gap:8px;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .nav::-webkit-scrollbar{display:none}
+    .chip{
+      flex:0 0 auto;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.7);
+      font-size: 12px;
+      color: #2a2f36;
+      white-space: nowrap;
+      text-decoration: none;
+      transition: .15s ease;
+    }
+    .chip:active{transform: scale(.98)}
+    .chip b{font-weight:600}
+    .chip .dot{
+      display:inline-block;
+      width:8px;height:8px;border-radius:99px;margin-right:6px;
+      background: var(--stone);
+      vertical-align: -1px;
+    }
+
+    /* Cards */
+    .grid{
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .card{
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card-h{
+      padding: 16px 16px 8px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .card h2{
+      margin:0;
+      font-family: "Noto Serif SC", serif;
+      font-size: 18px;
+      line-height: 1.25;
+    }
+    .tag{
+      flex:0 0 auto;
+      font-size: 11px;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      background: #fafafa;
+      padding: 6px 10px;
+      border-radius: 999px;
+    }
+    .meta{
+      padding: 0 16px 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    /* ✅ 更高的图表区域（手机端） */
+    .chart{
+      height: 320px;
+      width: 100%;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(#fff, #fff);
+    }
+
+    /* ✅ 图下注释块：把注释从图里挪出去 */
+    .chart-note{
+      padding: 10px 16px 14px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+      background: #fff;
+    }
+
+    .pad{ padding: 14px 16px 16px; }
+
+    /* Metric strip */
+    .metrics{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .m{
+      border: 1px dashed var(--line);
+      border-radius: 14px;
+      padding: 10px 10px;
+      background: #fbfbfb;
+    }
+    .m .k{ font-size: 11px; color: var(--muted); }
+    .m .v{
+      margin-top: 6px;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing:.01em;
+    }
+    .m .u{
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-left: 6px;
+    }
+    .m .s{
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* Disclosure & accordion */
+    details{
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background:#fcfcfc;
+      padding: 10px 12px;
+      margin-top: 12px;
+    }
+    summary{
+      cursor:pointer;
+      list-style:none;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      font-weight:600;
+      font-size: 13px;
+    }
+    summary::-webkit-details-marker{display:none}
+    .caret{
+      width: 10px;height:10px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);
+      transform: rotate(45deg);
+      transition:.15s ease;
+      margin-left: 10px;
+    }
+    details[open] .caret{transform: rotate(225deg)}
+    .note{
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+    .bullet{
+      margin: 8px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.75;
+    }
+
+    /* Modal (no alert) */
+    .modal{
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 18, 20, .42);
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      padding: 14px;
+      padding-bottom: calc(14px + env(safe-area-inset-bottom));
+      z-index: 999;
+    }
+    .modal.show{display:flex}
+    .sheet{
+      width: min(var(--max), 100%);
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .sheet-h{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+    .sheet-h b{font-size: 14px}
+    .x{
+      border: 1px solid var(--line);
+      background:#fafafa;
+      width: 32px; height: 32px;
+      border-radius: 10px;
+      cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .sheet-b{
+      padding: 12px 14px 16px;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.75;
+    }
+    .sheet-b code{
+      background:#f3f4f6;
+      padding: 2px 6px;
+      border-radius: 8px;
+      color:#374151;
+    }
+
+    /* Footer */
+    .footer{
+      margin-top: 14px;
+      padding: 16px 8px 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+    .src{
+      margin-top: 8px;
+      display:flex;
+      flex-direction:column;
+      gap: 8px;
+    }
+    .src a{
+      text-decoration: none;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.6);
+      padding: 10px 12px;
+      border-radius: 14px;
+    }
+
+    /* Desktop tweaks */
+    @media (min-width: 860px){
+      h1{font-size: 38px}
+      .grid{grid-template-columns: 1fr 1fr}
+      .card.full{grid-column: 1 / -1}
+      .chart{height: 360px}
+      .metrics{grid-template-columns: repeat(4, 1fr)}
+      .modal{align-items:center}
+      .sheet{border-radius: 22px}
+    }
+
+    /* Small helper buttons */
+    .btnrow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 12px;
+    }
+    .btn{
+      appearance:none;
+      border: 1px solid var(--line);
+      background: #fafafa;
+      border-radius: 999px;
+      padding: 10px 12px;
+      font-size: 12px;
+      cursor:pointer;
+    }
+    .btn b{font-weight:600}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <div class="kicker">FY26 · Q2 · Earnings / AI Economics</div>
+      <h1>微软 2026 财年 Q2：AI 带来的收入与成本</h1>
+      <p class="sub">
+        公司通常不单独披露“AI收入”。本页将 <b>财报已披露的可量化指标</b> 与 <b>AI 归因口径示例</b>分层呈现，
+        以便你用于内部汇报与商业化定价讨论。
+      </p>
+    </header>
+
+    <div class="sticky">
+      <nav class="nav" aria-label="section nav">
+        <a class="chip" href="#kpi"><span class="dot" style="background:var(--stone)"></span><b>关键指标</b></a>
+        <a class="chip" href="#revenue"><span class="dot" style="background:var(--deep-blue)"></span>收入信号</a>
+        <a class="chip" href="#copilot"><span class="dot" style="background:var(--sand)"></span>Copilot测算</a>
+        <a class="chip" href="#cost"><span class="dot" style="background:var(--deep-red)"></span>成本与CapEx</a>
+        <a class="chip" href="#unit"><span class="dot" style="background:var(--deep-green)"></span>单位经济</a>
+        <a class="chip" href="#howto"><span class="dot" style="background:var(--sand)"></span>归因口径</a>
+        <a class="chip" href="#sources"><span class="dot" style="background:var(--stone)"></span>来源</a>
+      </nav>
+    </div>
+
+    <!-- KPI -->
+    <section class="card full" id="kpi">
+      <div class="card-h">
+        <h2>本季度“AI相关”可量化信号</h2>
+        <span class="tag">披露口径：财报/电话会</span>
+      </div>
+      <div class="meta">
+        这些指标不是“AI收入”本身，但能反映 AI 正在驱动哪些产品线增长、以及成本压力来自哪里。
+      </div>
+
+      <div class="pad">
+        <div class="metrics">
+          <div class="m">
+            <div class="k">总营收</div>
+            <div class="v">81.3<span class="u">B 美元</span></div>
+            <div class="s">同比增长约 17%</div>
+          </div>
+          <div class="m">
+            <div class="k">Microsoft Cloud 营收</div>
+            <div class="v">50+<span class="u">B 美元</span></div>
+            <div class="s">云+AI 是核心叙事</div>
+          </div>
+          <div class="m">
+            <div class="k">Azure & 相关服务增速</div>
+            <div class="v">+39<span class="u">%</span></div>
+            <div class="s">含 AI 负载增量</div>
+          </div>
+          <div class="m">
+            <div class="k">资本开支（CapEx）</div>
+            <div class="v">37.5<span class="u">B 美元</span></div>
+            <div class="s">主要用于 AI 基础设施</div>
+          </div>
+        </div>
+
+        <div class="btnrow">
+          <button class="btn" data-modal="m1"><b>为什么这些算“AI信号”？</b></button>
+          <button class="btn" data-modal="m2"><b>财报没披露AI收入怎么办？</b></button>
+        </div>
+
+        <details>
+          <summary>
+            读图方式（适合给老板讲的 20 秒版本）
+            <span class="caret" aria-hidden="true"></span>
+          </summary>
+          <div class="note">
+            <ul class="bullet">
+              <li><b>收入侧</b>：最容易看到的是 “Azure 增速” 与 “Microsoft Cloud 收入体量”，它们承载了 AI 推动的云消费增量。</li>
+              <li><b>成本侧</b>：CapEx 和折旧/算力相关成本是 AI 的第一压力源，短期会压毛利或利润率。</li>
+              <li><b>产品侧</b>：Copilot / Azure AI API 等会体现为各业务线增长、ARPU 或 seat 增长（但公司不一定分拆披露）。</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <div class="grid">
+      <!-- Revenue signals -->
+      <section class="card" id="revenue">
+        <div class="card-h">
+          <h2>收入：AI 带来的“可见增长”</h2>
+          <span class="tag">财报披露</span>
+        </div>
+        <div class="meta">
+          把 AI 视为“增量需求引擎”：它会让云消费上升、让订阅升级、让企业服务更高单价。
+        </div>
+        <div class="chart" id="chartRevenue"></div>
+        <div class="chart-note">
+          注：公司未单独披露“AI收入”。此处用云增长与分部收入作为 AI 商业化的可见代理指标（非 AI 收入拆分）。
+        </div>
+        <div class="pad">
+          <details>
+            <summary>你可以怎么解读（收入侧）<span class="caret"></span></summary>
+            <div class="note">
+              <ul class="bullet">
+                <li><b>Azure 增速</b>是 AI 驱动的最直接代理变量：推理、训练、数据平台会提升云消费。</li>
+                <li><b>Microsoft Cloud 体量</b>让 AI 具备“可规模化商业化”的母体：订阅 + 云消费形成闭环。</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- Cost / CapEx -->
+      <section class="card" id="cost">
+        <div class="card-h">
+          <h2>成本：AI 把钱花在哪</h2>
+          <span class="tag">CapEx / 毛利压力</span>
+        </div>
+        <div class="meta">
+          AI 的核心成本不是“模型本身”，而是 GPU、数据中心、折旧、以及推理持续消耗。
+        </div>
+        <div class="chart" id="chartCost"></div>
+        <div class="chart-note">
+          注：饼图为“示意结构”，用于表达成本重心在算力/数据中心；精确拆分需内部成本台账。
+        </div>
+        <div class="pad">
+          <details>
+            <summary>你可以怎么解读（成本侧）<span class="caret"></span></summary>
+            <div class="note">
+              <ul class="bullet">
+                <li><b>CapEx 上升</b>≈ AI 供给扩张：更多 GPU、更多数据中心容量。</li>
+                <li><b>云毛利率下行</b>常见原因：折旧上升 + AI 基础设施运维成本上升。</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- ✅ Copilot inference (NEW) -->
+      <section class="card full" id="copilot">
+        <div class="card-h">
+          <h2>AI 订阅产品：可反推的收入信号</h2>
+          <span class="tag">非官方披露 · 区间测算</span>
+        </div>
+        <div class="meta">
+          微软未单独披露“AI收入”，但披露了可定价的 Copilot 付费规模。这里用 <b>披露规模 × 公开定价 × 系数</b>
+          给出 <b>年化收入能力</b> 的区间估算（用于内部判断）。
+        </div>
+        <div class="chart" id="chartCopilot"></div>
+        <div class="chart-note">
+          注：区间系数用于反映折扣、未满周期、合同打包等现实因素；对外沟通建议使用“十亿美元级年化能力”，不报单点。
+        </div>
+        <div class="pad">
+          <div class="metrics">
+            <div class="m">
+              <div class="k">Microsoft 365 Copilot</div>
+              <div class="v">15.0<span class="u">M seats</span></div>
+              <div class="s">披露：paid seats；seat 同比 +160%</div>
+            </div>
+            <div class="m">
+              <div class="k">公开定价（企业）</div>
+              <div class="v">$30<span class="u">/user/月</span></div>
+              <div class="s">用于估算年化收入能力</div>
+            </div>
+            <div class="m">
+              <div class="k">GitHub Copilot</div>
+              <div class="v">4.7<span class="u">M paid</span></div>
+              <div class="s">同比 +75%；Pro/Pro+ 增长</div>
+            </div>
+            <div class="m">
+              <div class="k">建议对外表述</div>
+              <div class="v">区间<span class="u">AR</span></div>
+              <div class="s">“十亿美元级年化能力”</div>
+            </div>
+          </div>
+
+          <details>
+            <summary>测算口径说明（给老板用）<span class="caret"></span></summary>
+            <div class="note">
+              <ul class="bullet">
+                <li><b>最朴素口径</b>：年化 ≈ seats × $30 × 12（不考虑折扣与非全年付费）。</li>
+                <li><b>更稳健口径</b>：引入折扣率、部分席位未满周期、企业合同打包等系数 → 得到区间而非单点。</li>
+                <li><b>合规表述</b>：这是“基于公开定价与披露规模的估算”，不等同公司披露收入。</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- Unit economics -->
+      <section class="card full" id="unit">
+        <div class="card-h">
+          <h2>单位经济：每“赚”100美元，AI 可能“吞”多少成本？</h2>
+          <span class="tag">可用于内部归因</span>
+        </div>
+        <div class="meta">
+          这里给的是 <b>框架</b>：你可把它改成“Copilot/问答/AI API”等任一模块的单位经济测算。
+        </div>
+        <div class="chart" id="chartUnit"></div>
+        <div class="chart-note">
+          注：这是“方法模板”。把情景值替换为你的 Copilot / Azure AI API 的实际口径即可用于汇报。
+        </div>
+        <div class="pad">
+          <div class="note">
+            计算方式示例：<br/>
+            <code>(AI相关成本 / AI相关收入) × 100</code> ，或更保守：<code>(AI增量成本 / AI增量收入) × 100</code>
+          </div>
+
+          <div class="btnrow">
+            <button class="btn" data-modal="m3"><b>把它改成“Copilot单位经济”怎么做？</b></button>
+            <button class="btn" data-modal="m4"><b>把它改成“Azure AI API单位经济”怎么做？</b></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Attribution how-to -->
+      <section class="card full" id="howto">
+        <div class="card-h">
+          <h2>“AI收入归因”口径（可直接搬进你内部模型）</h2>
+          <span class="tag">你可替换为自家口径</span>
+        </div>
+        <div class="meta">
+          微软不单列 AI 收入时，你可以用“产品归因 + 云消费归因 + 增量毛利归因”的方式，让老板看到 AI 的真实经济性。
+        </div>
+
+        <div class="pad">
+          <details open>
+            <summary>口径 A：产品直归因（最清晰）<span class="caret"></span></summary>
+            <div class="note">
+              适用：可明确单价/席位的产品（如 Copilot）。<br/>
+              <ul class="bullet">
+                <li>收入 = <b>付费席位数 × 单价</b>（或按年合同金额拆分到季度）</li>
+                <li>成本 = <b>推理成本 + 研发摊销 + 分摊运营</b></li>
+                <li>输出：席位毛利、ARPU、续费/扩席驱动</li>
+              </ul>
+            </div>
+          </details>
+
+          <details>
+            <summary>口径 B：云消费归因（最贴近 Azure）<span class="caret"></span></summary>
+            <div class="note">
+              适用：AI API / 推理服务、数据平台、训练作业。<br/>
+              <ul class="bullet">
+                <li>收入 = <b>AI相关服务消费额</b>（Azure OpenAI/推理/训练/向量/检索等）</li>
+                <li>成本 = <b>GPU折旧 + 电力/运维 + 网络/存储</b></li>
+                <li>关键：把 “AI负载” 从整体 Azure 消费中拆分出来</li>
+              </ul>
+            </div>
+          </details>
+
+          <details>
+            <summary>口径 C：增量归因（最适合汇报“AI到底值不值”）<span class="caret"></span></summary>
+            <div class="note">
+              适用：AI 推动订阅升级、提升留存或带动云消费。<br/>
+              <ul class="bullet">
+                <li>增量收入 = (启用AI后的 ARPU/留存/用量提升) × 用户规模</li>
+                <li>增量成本 = 推理用量 × 单位成本 + 额外CapEx折旧摊销</li>
+                <li>输出：<b>AI ROI、回收期、利润率弹性</b></li>
+              </ul>
+            </div>
+          </details>
+
+          <details>
+            <summary>提示：你最容易被质疑的 3 个点（提前防御）<span class="caret"></span></summary>
+            <div class="note">
+              <ul class="bullet">
+                <li>“你把所有增长都算 AI 了？” → 用 <b>增量归因</b>，只算“有AI才发生的那部分”。</li>
+                <li>“成本怎么分摊？” → 把成本拆成 <b>变动成本（推理）</b> + <b>固定成本（折旧）</b> 两类。</li>
+                <li>“为什么现在利润率下降？” → 强调 <b>供给扩张期</b>：CapEx 前置换规模优势。</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+      </section>
+    </div>
+
+    <!-- Sources -->
+    <section class="footer" id="sources">
+      <div class="kicker">Sources</div>
+      <div style="margin-top:6px; font-family:'Noto Serif SC',serif; font-size:18px; color:var(--ink);">数据来源（点击打开）</div>
+      <div class="src">
+        <a href="https://www.microsoft.com/en-us/investor/earnings/fy-2026-q2/press-release-webcast" target="_blank" rel="noopener">
+          微软 IR：FY26 Q2 Press Release / Webcast（官方披露）
+        </a>
+        <a href="https://www.microsoft.com/en-us/Investor/earnings/FY-2026-Q2/performance" target="_blank" rel="noopener">
+          微软 IR：FY26 Q2 Performance（官方分部与亮点）
+        </a>
+        <a href="https://www.reuters.com/business/retail-consumer/microsoft-edges-past-cloud-growth-expectations-2026-01-28/" target="_blank" rel="noopener">
+          Reuters：CapEx 37.5B、Azure 增速等市场关注点
+        </a>
+        <a href="https://www.theverge.com/news/869493/microsoft-q2-2026-earnings-revenue-profits-windows-xbox-gaming-surface" target="_blank" rel="noopener">
+          The Verge：Q2 2026 earnings 综述与 CapEx 描述
+        </a>
+      </div>
+      <div style="margin-top:10px;">
+        注：页面中的“AI收入归因口径”属于分析框架示例，不代表微软官方披露口径。
+      </div>
+    </section>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="mtitle">
+      <div class="sheet-h">
+        <b id="mtitle">说明</b>
+        <button class="x" id="close" aria-label="Close">✕</button>
+      </div>
+      <div class="sheet-b" id="mbody"></div>
+    </div>
+  </div>
+
+  <script>
+    // -----------------------------
+    // Data (update here if you want)
+    // -----------------------------
+    const disclosed = {
+      revenue_total_b: 81.3,         // $B
+      cloud_revenue_b: 51.0,         // "50B+" (illustrative)
+      azure_growth_pct: 39,          // %
+      capex_b: 37.5,                 // $B
+
+      // ✅ Copilot disclosed metrics (you provided)
+      m365_copilot_paid_seats_m: 15.0, // 15 million seats
+      github_copilot_paid_m: 4.7       // 4.7 million paid
+    };
+
+    // A. Revenue signal chart (proxy indicators)
+    const revenueBars = [
+      {name:'总营收', value: disclosed.revenue_total_b, color: getCss('--stone')},
+      {name:'Microsoft Cloud', value: disclosed.cloud_revenue_b, color: getCss('--deep-blue')},
+      {name:'Intelligent Cloud', value: 32.9, color: getCss('--deep-green')}
+    ];
+    const azureGrowth = disclosed.azure_growth_pct;
+
+    // B. Cost chart (AI spending proxy) — illustrative split
+    const capexSplit = [
+      {name:'数据中心/算力设备（示意）', value: 70, color: getCss('--deep-red')},
+      {name:'网络/存储/电力（示意）', value: 18, color: getCss('--sand')},
+      {name:'其他（示意）', value: 12, color: getCss('--stone')}
+    ];
+
+    // C. Unit economics chart (framework scenarios)
+    const unitScenario = [
+      {name:'保守情景', value: 140, color: getCss('--deep-red')},   // cost per $100 revenue
+      {name:'基准情景', value: 100, color: getCss('--stone')},
+      {name:'乐观情景', value: 70,  color: getCss('--deep-green')}
+    ];
+
+    // -----------------------------
+    // Render charts (with safety)
+    // -----------------------------
+    const common = {
+      textStyle: {fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "PingFang SC","Microsoft YaHei", Arial'},
+      grid: {left: 52, right: 18, top: 48, bottom: 62},
+      tooltip: {
+        trigger: 'item',
+        backgroundColor: 'rgba(255,255,255,.96)',
+        borderColor: '#e6e6e3',
+        borderWidth: 1,
+        textStyle: {color:'#1f2328', fontSize: 12},
+        extraCssText: 'box-shadow: 0 10px 30px rgba(0,0,0,.08); border-radius: 12px;'
+      }
+    };
+
+    function setChartPlaceholder(id, text){
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.innerHTML = `
+        <div style="height:100%;display:flex;align-items:center;justify-content:center;
+        color:#6b7280;font-size:12px;padding:16px;text-align:center;">
+          ${text}
+        </div>`;
+    }
+
+    // Chart 1: Revenue signals
+    (function(){
+      const el = document.getElementById('chartRevenue');
+      if(!el) return;
+      if(typeof echarts === 'undefined'){
+        setChartPlaceholder('chartRevenue', '图表库未加载（可能被预览器拦截或无网络）。请用 Safari 打开或检查 CDN。');
+        return;
+      }
+
+      const c = echarts.init(el, null, {renderer:'canvas'});
+      const option = {
+        ...common,
+        title: {
+          text: 'AI 相关增长信号（单位：十亿美元 / %）',
+          left: 16, top: 10,
+          textStyle: {fontSize: 12, fontWeight: 600, color:'#2a2f36'},
+          subtext: '用云增长与分部收入作为 AI 商业化代理指标（非 AI 收入拆分）',
+          subtextStyle: {fontSize: 11, color:'#6b7280'}
+        },
+        legend: {show:false},
+        xAxis: {
+          type: 'category',
+          data: revenueBars.map(d=>d.name),
+          axisTick: {show:false},
+          axisLine: {lineStyle:{color:'#e6e6e3'}},
+          axisLabel: {color:'#6b7280', fontSize: 11, interval: 0}
+        },
+        yAxis: {
+          type: 'value',
+          axisLine: {show:false},
+          axisTick: {show:false},
+          axisLabel: {color:'#6b7280', fontSize: 11},
+          splitLine: {lineStyle:{color:'#efefec'}}
+        },
+        series: [
+          {
+            name: '金额（$B）',
+            type: 'bar',
+            barWidth: 34,
+            data: revenueBars.map(d=>({
+              value:d.value,
+              itemStyle:{color:d.color, borderRadius:[8,8,0,0]}
+            })),
+            emphasis:{focus:'series'}
+          },
+          {
+            name: 'Azure 增速（%）',
+            type: 'line',
+            symbol: 'circle',
+            symbolSize: 7,
+            lineStyle: {width: 2, color: getCss('--deep-blue')},
+            itemStyle: {color: getCss('--deep-blue')},
+            // 只在 Microsoft Cloud 位置上标一个点（避免误读为三点）
+            data: revenueBars.map((d,i)=> i===1 ? azureGrowth : null),
+            tooltip: { valueFormatter: (v)=> v==null ? '' : `${v}%（Azure & 相关服务）` }
+          }
+        ]
+      };
+      c.setOption(option);
+      window.addEventListener('resize', ()=>c.resize());
+    })();
+
+    // Chart 2: Cost / CapEx
+    (function(){
+      const el = document.getElementById('chartCost');
+      if(!el) return;
+      if(typeof echarts === 'undefined'){
+        setChartPlaceholder('chartCost', '图表库未加载（可能被预览器拦截或无网络）。请用 Safari 打开或检查 CDN。');
+        return;
+      }
+
+      const c = echarts.init(el, null, {renderer:'canvas'});
+      const option = {
+        ...common,
+        grid: {left: 16, right: 16, top: 56, bottom: 18},
+        title: {
+          text: `CapEx：$${disclosed.capex_b}B（AI 基础设施为主）`,
+          left: 16, top: 10,
+          textStyle: {fontSize: 12, fontWeight: 600, color:'#2a2f36'},
+          subtext: '单位：十亿美元（$B）｜结构为“示意”',
+          subtextStyle: {fontSize: 11, color:'#6b7280'}
+        },
+        series: [
+          {
+            name: 'CapEx 去向（示意）',
+            type: 'pie',
+            radius: ['36%','70%'],
+            center: ['50%','56%'],
+            avoidLabelOverlap: true,
+            itemStyle: {borderColor:'#fff', borderWidth: 2},
+            label: { color:'#2a2f36', formatter: (p)=> `${p.name}\n${p.value}%`, fontSize: 11 },
+            labelLine: {length: 10, length2: 8, lineStyle:{color:'#d9d9d6'}},
+            data: capexSplit.map(d=>({name:d.name, value:d.value, itemStyle:{color:d.color}}))
+          }
+        ]
+      };
+      c.setOption(option);
+      window.addEventListener('resize', ()=>c.resize());
+    })();
+
+    // Chart 3: Copilot inferred annual revenue capacity
+    (function(){
+      const el = document.getElementById('chartCopilot');
+      if(!el) return;
+      if(typeof echarts === 'undefined'){
+        setChartPlaceholder('chartCopilot', '图表库未加载（可能被预览器拦截或无网络）。请用 Safari 打开或检查 CDN。');
+        return;
+      }
+
+      // Public list price: $30/user/month (enterprise)
+      const m365Seats = disclosed.m365_copilot_paid_seats_m * 1_000_000;
+      const m365Price = 30;
+
+      // Scenarios: conservative / base / optimistic
+      const scenarios = [
+        {name:'保守', factor: 0.55},
+        {name:'基准', factor: 0.75},
+        {name:'乐观', factor: 0.90}
+      ];
+
+      const annual = scenarios.map(s => ({
+        name: s.name,
+        value: (m365Seats * m365Price * 12 * s.factor) / 1e9 // $B
+      }));
+
+      const c = echarts.init(el, null, {renderer:'canvas'});
+      const option = {
+        ...common,
+        grid: {left: 52, right: 18, top: 56, bottom: 62},
+        title: {
+          text: 'M365 Copilot 年化收入能力（区间估算）',
+          left: 16, top: 10,
+          textStyle: {fontSize: 12, fontWeight: 600, color:'#2a2f36'},
+          subtext: '单位：十亿美元（$B）｜披露 seats × 公开定价 × 系数（非官方披露）',
+          subtextStyle: {fontSize: 11, color:'#6b7280'}
+        },
+        xAxis: {
+          type:'category',
+          data: annual.map(d=>d.name),
+          axisTick:{show:false},
+          axisLine:{lineStyle:{color:'#e6e6e3'}},
+          axisLabel:{color:'#6b7280', fontSize: 11}
+        },
+        yAxis: {
+          type:'value',
+          axisTick:{show:false},
+          axisLine:{show:false},
+          axisLabel:{color:'#6b7280', fontSize: 11},
+          splitLine:{lineStyle:{color:'#efefec'}}
+        },
+        tooltip: {
+          ...common.tooltip,
+          valueFormatter: (v)=> `${v} $B`
+        },
+        series: [{
+          type:'bar',
+          barWidth: 34,
+          data: annual.map((d,i)=>({
+            value: +d.value.toFixed(2),
+            itemStyle:{
+              color: i===1 ? getCss('--sand') : getCss('--stone'),
+              borderRadius:[8,8,0,0]
+            }
+          }))
+        }]
+      };
+      c.setOption(option);
+      window.addEventListener('resize', ()=>c.resize());
+    })();
+
+    // Chart 4: Unit economics scenarios
+    (function(){
+      const el = document.getElementById('chartUnit');
+      if(!el) return;
+      if(typeof echarts === 'undefined'){
+        setChartPlaceholder('chartUnit', '图表库未加载（可能被预览器拦截或无网络）。请用 Safari 打开或检查 CDN。');
+        return;
+      }
+
+      const c = echarts.init(el, null, {renderer:'canvas'});
+      const option = {
+        ...common,
+        title: {
+          text: '单位经济框架（单位：每 $100 收入的成本 $）',
+          left: 16, top: 10,
+          textStyle: {fontSize: 12, fontWeight: 600, color:'#2a2f36'},
+          subtext: '把情景值替换为 Copilot / Azure AI API 的真实口径即可',
+          subtextStyle: {fontSize: 11, color:'#6b7280'}
+        },
+        xAxis: {
+          type: 'category',
+          data: unitScenario.map(d=>d.name),
+          axisTick: {show:false},
+          axisLine: {lineStyle:{color:'#e6e6e3'}},
+          axisLabel: {color:'#6b7280', fontSize: 11}
+        },
+        yAxis: {
+          type: 'value',
+          axisTick: {show:false},
+          axisLine: {show:false},
+          axisLabel: {color:'#6b7280', fontSize: 11},
+          splitLine: {lineStyle:{color:'#efefec'}}
+        },
+        series: [
+          {
+            type:'bar',
+            barWidth: 34,
+            data: unitScenario.map(d=>({
+              value: d.value,
+              itemStyle:{color:d.color, borderRadius:[8,8,0,0]}
+            })),
+            tooltip: { valueFormatter: (v)=> `$${v} / $100` }
+          }
+        ]
+      };
+      c.setOption(option);
+      window.addEventListener('resize', ()=>c.resize());
+    })();
+
+    // -----------------------------
+    // Modal content
+    // -----------------------------
+    const MODALS = {
+      m1: {
+        title: "为什么这些算“AI信号”？",
+        body: `
+          <p><b>微软不单列 AI 收入</b>时，外部最可靠的做法是看“AI 会直接推高”的指标：</p>
+          <ul>
+            <li><code>Azure 增速</code>：AI 推理/训练/数据平台 → 云消费增加（收入侧代理）。</li>
+            <li><code>Microsoft Cloud 体量</code>：AI 产品商业化通常绑定订阅与云服务。</li>
+            <li><code>CapEx</code>：算力与数据中心投入，是 AI 成本最直接的压力源。</li>
+          </ul>
+          <p>这些指标能让你在不虚构 AI 收入的情况下，仍然讲清“AI 在拉增长、也在压成本”。</p>
+        `
+      },
+      m2: {
+        title: "财报没披露 AI 收入怎么办？",
+        body: `
+          <p>推荐分两层讲：</p>
+          <ol>
+            <li><b>对外</b>：只引用财报披露（增长、CapEx、毛利/利润率变化）。</li>
+            <li><b>对内</b>：做“AI 归因模型”——把收入拆成 <code>产品直归因</code> / <code>云消费归因</code> / <code>增量归因</code>。</li>
+          </ol>
+          <p>这样既能保证合规，又能给老板看到 AI 的真实经济性。</p>
+        `
+      },
+      m3: {
+        title: "改成“Copilot 单位经济”怎么做？",
+        body: `
+          <p>把页面里的“情景演示”换成可落地口径：</p>
+          <ul>
+            <li><b>收入</b>：Copilot 付费席位 × 单价（按合同拆分到季度）。</li>
+            <li><b>变动成本</b>：推理 token/请求量 × 单位成本（或供应商结算价）。</li>
+            <li><b>固定成本</b>：分摊折旧（GPU/数据中心）+ 团队人力摊销。</li>
+          </ul>
+          <p>输出：<code>每 $100 Copilot 收入的成本</code>、毛利率、回收期。</p>
+        `
+      },
+      m4: {
+        title: "改成“Azure AI API 单位经济”怎么做？",
+        body: `
+          <ul>
+            <li><b>收入</b>：AI API 消费额（推理/训练/向量/检索等）</li>
+            <li><b>成本</b>：GPU 折旧 + 电力/运维 + 网络/存储（按用量或集群分摊）</li>
+            <li><b>关键</b>：先把 AI 负载从整体 Azure 消费中“拆出来”，再谈毛利。</li>
+          </ul>
+          <p>你可以按“模型类型/客户类型/峰谷负载”进一步拆分，做出更像财务的结果。</p>
+        `
+      }
+    };
+
+    // -----------------------------
+    // UI: Modal open/close
+    // -----------------------------
+    const modal = document.getElementById('modal');
+    const closeBtn = document.getElementById('close');
+    const mtitle = document.getElementById('mtitle');
+    const mbody  = document.getElementById('mbody');
+
+    document.addEventListener('click', (e)=>{
+      const btn = e.target.closest('[data-modal]');
+      if(btn){
+        const key = btn.getAttribute('data-modal');
+        const item = MODALS[key];
+        if(!item) return;
+        mtitle.textContent = item.title;
+        mbody.innerHTML = item.body;
+        modal.classList.add('show');
+      }
+      if(e.target === modal) modal.classList.remove('show');
+    });
+    closeBtn.addEventListener('click', ()=> modal.classList.remove('show'));
+
+    // -----------------------------
+    // helpers
+    // -----------------------------
+    function getCss(varName){
+      return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+    }
+  </script>
+</body>
+</html>
